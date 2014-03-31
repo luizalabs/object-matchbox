@@ -1,4 +1,4 @@
-package br.com.buzungobbm.matchbox.util;
+package br.com.buzungobbm.matchbox;
 
 public enum Operator {
 	EQUALS_TO("="), 
