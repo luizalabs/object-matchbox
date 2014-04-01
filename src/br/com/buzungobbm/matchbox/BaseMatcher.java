@@ -5,15 +5,15 @@ import java.util.Map;
 
 public abstract class BaseMatcher {
 	
-	public List<BaseType> filters;
+	public List<BaseFilter> filters;
 
 	public abstract Map<String, String> matchObject();
 
 
-	public List<BaseType> getFilters() {
+	public List<BaseFilter> getFilters() {
 		return this.filters;
 	}
-	public void setFilters(List<BaseType> filters) {
+	public void setFilters(List<BaseFilter> filters) {
 		this.filters = filters;
 	}
 	

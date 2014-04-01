@@ -1,6 +1,6 @@
 package br.com.buzungobbm.matchbox;
 
-public interface BaseType {
+public interface BaseFilter {
 
 	public Class<?> getClassName();
 	public void setClassName(Class<?> className);

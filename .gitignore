@@ -6,3 +6,5 @@
 *.swo
 *.swn
 .settings*
+.gradle
+/bin
