@@ -198,17 +198,98 @@ public class ObjectMatcherTest {
 
 	@Test
 	public void primitivesListComparisonWithinNestedObject () {
-		assertThat(true, equalTo(false));
+		TestObject testObject = new TestObject("Primitives list comparison within nested object", "Blue", 299.00, new NestedClass("nestedTest", 200.00, 30));
+
+		ArrayList<String> primitiveStringList = new ArrayList<String>();
+		primitiveStringList.add("first_primitive_string");
+		primitiveStringList.add("Second Primitive STRING");
+		testObject.getNestedObject().setFakeList(primitiveStringList);
+
+		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
+		try {
+			testFilter.add(this.buildFilter("First primitive string test with list", "br.com.buzungobbm.matchbox.mocks.NestedClass", "fakeList", Operator.EQUALS_TO,"first_primitive_string"));
+			testFilter.add(this.buildFilter("Second primitive string testwith list", "br.com.buzungobbm.matchbox.mocks.NestedClass", "fakeList", Operator.EQUALS_TO,"Second Primitive STRING"));
+		} catch (ClassNotFoundException cnfe) {
+			System.out.println(cnfe);
+		}
+		
+		ObjectMatcher matcher = new ObjectMatcher();
+		List<BaseFilter> result = new ArrayList<BaseFilter>();
+		try {
+			result = matcher.matchObject(testObject, testFilter);
+		} catch (ClassNotFoundException e) {
+			System.out.println(e);
+		}
+		
+		assertThat(true, equalTo(result.get(0).isApplyable()));
+		assertThat(true, equalTo(result.get(1).isApplyable()));
 	}
 
 	@Test
 	public void complexListComparisonWithinObject () {
-		assertThat(true, equalTo(false));
+		TestObject testObject = new TestObject("Complex list comparison within nested object", "Blue", 299.00, new NestedClass("nestedTest", 200.00, 30));
+
+		ArrayList<NestedClass> primitiveStringList = new ArrayList<NestedClass>();
+		primitiveStringList.add(new NestedClass("nestedListObjectTest", 250.00, 30));
+		primitiveStringList.add(new NestedClass("anotherNestedListObjectTest", 150.00, 30));
+		testObject.setFakeNestedObjectList(primitiveStringList);
+
+		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
+		try {
+			testFilter.add(this.buildFilter("First complex string test with list", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO,"nestedListObjectTest"));
+			testFilter.add(this.buildFilter("First complex double test with list", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.LOWER_THAN_OR_EQUALS_TO,"250.00"));
+			testFilter.add(this.buildFilter("Second complex string test with list", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO,"anotherNestedListObjectTest"));
+		} catch (ClassNotFoundException cnfe) {
+			System.out.println(cnfe);
+		}
+		
+		ObjectMatcher matcher = new ObjectMatcher();
+		List<BaseFilter> result = new ArrayList<BaseFilter>();
+		try {
+			result = matcher.matchObject(testObject, testFilter);
+		} catch (ClassNotFoundException e) {
+			System.out.println(e);
+		}
+		
+		assertThat(true, equalTo(result.get(0).isApplyable()));
+		assertThat(true, equalTo(result.get(1).isApplyable()));
+		assertThat(true, equalTo(result.get(2).isApplyable()));
 	}
 
 	@Test
 	public void complexListComparisonWithinNestedObject () {
-		assertThat(true, equalTo(false));
+		TestObject testObject = new TestObject("Complex list comparison within nested object", "Blue", 299.00, null);
+		
+		NestedClass nestedObject = new NestedClass("nestedTest", 200.00, 30);
+		ArrayList<NestedClass> primitiveStringList = new ArrayList<NestedClass>();
+		primitiveStringList.add(new NestedClass("nestedListObjectTest", 199.99, 10));
+		primitiveStringList.add(new NestedClass("anotherNestedListObjectTest", 49.90, 10));
+		nestedObject.setFakeNestedObjectList(primitiveStringList);
+		
+		testObject.setNestedObject(nestedObject);
+
+		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
+		try {
+			testFilter.add(this.buildFilter("First complex test with nested object in a list comparing a string", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "nestedListObjectTest"));
+			testFilter.add(this.buildFilter("First complex test with nested object in a list comparing a double", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "199.99"));
+			testFilter.add(this.buildFilter("Second complex test with nested object in a list comparing a string", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "anotherNestedListObjectTest"));
+			testFilter.add(this.buildFilter("Second complex test with nested object in a list comparing a double", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "49.90"));
+		} catch (ClassNotFoundException cnfe) {
+			System.out.println(cnfe);
+		}
+		
+		ObjectMatcher matcher = new ObjectMatcher();
+		List<BaseFilter> result = new ArrayList<BaseFilter>();
+		try {
+			result = matcher.matchObject(testObject, testFilter);
+		} catch (ClassNotFoundException e) {
+			System.out.println(e);
+		}
+
+		assertThat(true, equalTo(result.get(0).isApplyable()));
+		assertThat(true, equalTo(result.get(1).isApplyable()));
+		assertThat(true, equalTo(result.get(2).isApplyable()));
+		assertThat(true, equalTo(result.get(3).isApplyable()));
 	}
 
 }

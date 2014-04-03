@@ -9,6 +9,7 @@ public class NestedClass {
 	private double price;
 	private int quantity;
 	private List<String> fakeList;
+	private List<NestedClass> fakeNestedObjectList;
 	private Map<String, Integer> fakeMap;
 
 	public NestedClass (String name, Double price, Integer quantity) { 
@@ -25,6 +26,10 @@ public class NestedClass {
 
 	public Double getPrice() { return this.price; }
 	public void setPrice(Double price) { this.price = price; }
+
+	public List<NestedClass> getFakeNestedObjectList() { return this.fakeNestedObjectList; }
+	public void setFakeNestedObjectList(List<NestedClass> fakeList) { this.fakeNestedObjectList = fakeList; }
+	public void addFakeNestedObjectList(NestedClass fakeItem) { this.fakeNestedObjectList.add(fakeItem); }
 
 	public List<String> getFakeList() { return this.fakeList; }
 	public void setFakeList(List<String> fakeList) { this.fakeList = fakeList; }

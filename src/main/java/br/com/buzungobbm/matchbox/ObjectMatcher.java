@@ -158,30 +158,69 @@ public class ObjectMatcher {
 		if (instance.getClass().equals(filter.getClassName())) {
 
 			for (Field field : classFields) {
+
+				if (!fieldValue.equals(""))
+					break;
+
 				if (field.getName().equals(filter.getAttributeName())) {
 					for (Method method : instance.getClass().getMethods()) {
-						if ((method.getName().startsWith("get")) && 
+						if ((method.getName().startsWith("get")) &&
 								(method.getName().toLowerCase().endsWith(field.getName().toLowerCase())) &&
 								(method.getName().length() == (field.getName().length() + 3))) {
-							/*
-							 * I should ask here if this is a complex object or a primitive and process it according
-							 * to the result
-							 * 
-							 * if this list is a complex/user defined object i should submit each object to this method
-							 * else if this list is composed from primitive types, i could just return them... maybe.. =S
-							*/
-							fieldValue = invokeGetter(method, instance);
-							break;
+
+							if (isPrimitive(method.getReturnType())) {
+								String s = invokeGetter(method, instance);
+								if (conditionSatisfies(filter.getValue(), filter.getOperator(), s)) {
+									return s;
+								}
+							} else if (isList(method.getReturnType())) {
+
+								List<?> genericList = invokeListGetter(method, instance);
+								
+								if (genericList == null)
+									continue;
+
+								for (Object item : genericList) {
+									if (isPrimitive(item.getClass())) {
+										if (conditionSatisfies(filter.getValue(), filter.getOperator(), String.valueOf(item))) {
+											return String.valueOf(item);
+										}
+									}
+								}
+							}
+						}
+					}
+				} else {
+					for (Method method : instance.getClass().getMethods()) {
+						if (isList(method.getReturnType())) {
+
+							List<?> genericList = invokeListGetter(method, instance);
+
+							if (genericList == null) 
+								continue;
+
+							for (Object item : genericList) {
+								if (isPrimitive(item.getClass())) {
+									if (conditionSatisfies(filter.getValue(), filter.getOperator(), String.valueOf(item))) {
+										return String.valueOf(item);
+									}
+								} else if (!isPrimitive(item.getClass())) {
+									String s = extractValue(item, filter);
+									if (conditionSatisfies(filter.getValue(), filter.getOperator(), s)) {
+										return s;
+									}
+								}
+							}
 						}
 					}
 				}
-			}
+		}
 
-		} else {
+	} else {
 
-			for (Field field : classFields) {
+		for (Field field : classFields) {
 
-				Type type = field.getType();
+			Type type = field.getType();
 
 				if (isList(type)) {
 
@@ -190,11 +229,22 @@ public class ObjectMatcher {
 								(method.getName().toLowerCase().endsWith(field.getName().toLowerCase())) &&
 								(method.getName().length() == (field.getName().length() + 3))) {
 							List<?> genericList = invokeListGetter(method, instance);
-							if (genericList != null) {
-								fieldValue = extractValue(genericList.get(0), filter);
-							} else {
-								fieldValue = null;
+							
+							if (genericList == null) 
+								continue;
+
+							for (Object item : genericList) {
+								if (isPrimitive(item.getClass())) {
+									if (conditionSatisfies(filter.getValue(), filter.getOperator(), String.valueOf(item))) {
+										return String.valueOf(item);
+									}
+								} else {
+									String s = extractValue(item, filter);
+									if (conditionSatisfies(filter.getValue(), filter.getOperator(), s))
+										return s;
+								}
 							}
+
 							break;
 						}
 					}
@@ -211,18 +261,16 @@ public class ObjectMatcher {
 								(method.getName().length() == (field.getName().length() + 3))) {
 							Object genericObject = invokeObjectGetter(method, instance);
 							if (genericObject != null) {
-								fieldValue = extractValue(genericObject, filter);
-							} else {
-								fieldValue = null;
+								String s = extractValue(genericObject, filter);
+								if (conditionSatisfies(filter.getValue(), filter.getOperator(), s)) {
+									return s;
+								}
 							}
-							break;
 						}
 					}
 
 				}
-
 			}
-
 		}
 
 		return fieldValue;
