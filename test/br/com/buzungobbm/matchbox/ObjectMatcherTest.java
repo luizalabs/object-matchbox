@@ -11,14 +11,6 @@ import org.junit.Test;
 import br.com.buzungobbm.matchbox.mocks.*;
 
 public class ObjectMatcherTest {
-
-	private Object getTestObjectInstance (String name, String color, Double price) {
-		return getTestObjectInstance (name, color, price, null);
-	}
-	
-	private Object getTestObjectInstance (String name, String color, Double price, NestedClass nestedObject) {
-		return new TestObject(name, color, price, nestedObject);
-	}
 	
 	private BaseFilter getBaseFilterInstance() {
 		return new BaseFilter() {
@@ -106,7 +98,7 @@ public class ObjectMatcherTest {
 	
 	@Test
 	public void skipAndReturnTrueShouldForceMatcherToSetApplyableEqualsTrue () {
-		Object testObject = this.getTestObjectInstance("SimpleTest", "Blue", 299.00);
+		TestObject testObject = new TestObject("Skip and return true should force matcher to set applyable=true", "Blue", 299.00, null);
 		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
 		testFilter.add(this.buildFilter("Custom match returning true", MatchingOptions.SKIP_AND_RETURN_TRUE));
 		
@@ -122,9 +114,9 @@ public class ObjectMatcherTest {
 
 	@Test
 	public void skipAndReturnFalseShouldForceMatcherToSetApplyableEqualsFalse () {
-		Object testObject = this.getTestObjectInstance("SimpleTest", "Blue", 299.00);
+		TestObject testObject = new TestObject("Skip and return true should force matcher to set applyable=false", "Blue", 299.00, null);
 		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
-		testFilter.add(this.buildFilter("Custom match returning true", MatchingOptions.SKIP_AND_RETURN_FALSE));
+		testFilter.add(this.buildFilter("Custom match returning false", MatchingOptions.SKIP_AND_RETURN_FALSE));
 		
 		ObjectMatcher matcher = new ObjectMatcher();
 		List<BaseFilter> result = new ArrayList<BaseFilter>();
@@ -139,10 +131,10 @@ public class ObjectMatcherTest {
 
 	@Test
 	public void primitivesComparisonWithinObject () {
-		Object testObject = this.getTestObjectInstance("SimpleTest", "Blue", 299.00);
+		TestObject testObject = new TestObject("Primitives comparison within object", "Blue", 299.00, null);
 		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
 		testFilter.add(this.buildFilter("Setting applyable for product with price over 200.00", testObject.getClass(), "price", Operator.GREATER_THAN,"200.00"));
-		testFilter.add(this.buildFilter("Setting applyable for product with color blue", testObject.getClass(), "color", Operator.EQUALS_TO,"blue"));
+		testFilter.add(this.buildFilter("Setting applyable for blue coloured product", testObject.getClass(), "color", Operator.EQUALS_TO,"blue"));
 		
 		ObjectMatcher matcher = new ObjectMatcher();
 		List<BaseFilter> result = new ArrayList<BaseFilter>();
@@ -158,7 +150,7 @@ public class ObjectMatcherTest {
 
 	@Test
 	public void primitivesComparisonWithinNestedObject () {
-		Object testObject = this.getTestObjectInstance("SimpleTest", "Blue", 299.00, new NestedClass("nestedTest", 200.00, 30));
+		TestObject testObject = new TestObject("Primitives comparison within nested object", "Blue", 299.00, new NestedClass("nestedTest", 200.00, 30));
 
 		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
 		try {
@@ -182,7 +174,26 @@ public class ObjectMatcherTest {
 
 	@Test
 	public void primitivesListComparisonWithinObject () {
-		assertThat(true, equalTo(false));
+		TestObject testObject = new TestObject("Primitives ", "Blue", 299.00, null);
+		ArrayList<String> primitiveStringList = new ArrayList<String>();
+		primitiveStringList.add("first_primitive_string");
+		primitiveStringList.add("Second Primitive STRING");
+		testObject.setFakeList(primitiveStringList);
+
+		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
+		testFilter.add(this.buildFilter("First primitive string test with list", testObject.getClass(), "fakeList", Operator.EQUALS_TO,"first_primitive_string"));
+		testFilter.add(this.buildFilter("Second primitive string testwith list", testObject.getClass(), "fakeList", Operator.EQUALS_TO,"Second Primitive STRING"));
+		
+		ObjectMatcher matcher = new ObjectMatcher();
+		List<BaseFilter> result = new ArrayList<BaseFilter>();
+		try {
+			result = matcher.matchObject(testObject, testFilter);
+		} catch (ClassNotFoundException e) {
+			System.out.println(e);
+		}
+		
+		assertThat(true, equalTo(result.get(0).isApplyable()));
+		assertThat(true, equalTo(result.get(1).isApplyable()));
 	}
 
 	@Test

@@ -163,6 +163,13 @@ public class ObjectMatcher {
 						if ((method.getName().startsWith("get")) && 
 								(method.getName().toLowerCase().endsWith(field.getName().toLowerCase())) &&
 								(method.getName().length() == (field.getName().length() + 3))) {
+							/*
+							 * I should ask here if this is a complex object or a primitive and process it according
+							 * to the result
+							 * 
+							 * if this list is a complex/user defined object i should submit each object to this method
+							 * else if this list is composed from primitive types, i could just return them... maybe.. =S
+							*/
 							fieldValue = invokeGetter(method, instance);
 							break;
 						}
