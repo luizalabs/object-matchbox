@@ -291,5 +291,29 @@ public class ObjectMatcherTest {
 		assertThat(true, equalTo(result.get(2).isApplyable()));
 		assertThat(true, equalTo(result.get(3).isApplyable()));
 	}
+	
+	@Test
+	public void appliabilityOfFilters () {
+
+		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
+		try {
+			testFilter.add(this.buildFilter("First complex test with nested object in a list comparing a string", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "nestedListObjectTest"));
+			testFilter.add(this.buildFilter("First complex test with nested object in a list comparing a double", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "199.99"));
+			testFilter.add(this.buildFilter("Second complex test with nested object in a list comparing a string", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "anotherNestedListObjectTest"));
+			testFilter.add(this.buildFilter("Second complex test with nested object in a list comparing a double", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "49.90"));
+			
+			testFilter.get(0).setApplyable(true);
+			testFilter.get(1).setApplyable(true);
+			testFilter.get(2).setApplyable(true);
+			testFilter.get(3).setApplyable(true);
+		} catch (ClassNotFoundException cnfe) {
+			System.out.println(cnfe);
+		}
+
+		ObjectMatcher matcher = new ObjectMatcher();
+		
+		assertThat(true, equalTo(matcher.allFiltersAreApplyable(testFilter)));
+		
+	}
 
 }

@@ -5,6 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -92,6 +93,7 @@ public class ObjectMatcher {
 			   type.equals(Short.class) || type.equals(short.class) || 
 			   type.equals(Integer.class) || type.equals(int.class) || 
 			   type.equals(Long.class) || type.equals(long.class) || 
+			   type.equals(Date.class) ||
 			   type.equals(Float.class) || type.equals(float.class) || 
 			   type.equals(Double.class) || type.equals(double.class) || 
 			   type.equals(Boolean.class) || type.equals(boolean.class) ||
@@ -276,6 +278,16 @@ public class ObjectMatcher {
 		}
 
 		return fieldValue;
+	}
+
+	public boolean allFiltersAreApplyable(ArrayList<BaseFilter> filters) {
+
+		for (BaseFilter filter : filters) {
+			if (!filter.isApplyable())
+				return false;
+		}
+		
+		return true;
 	}
 	
 }
