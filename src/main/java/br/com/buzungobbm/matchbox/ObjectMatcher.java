@@ -111,7 +111,9 @@ public class ObjectMatcher {
 	}
 
 	public boolean conditionSatisfies(String value, Operator operator, String fieldValue) {
-		if (operator.equals(Operator.EQUALS_TO)) {
+		if (fieldValue.equals("")) {
+			return false;
+		} else if (operator.equals(Operator.EQUALS_TO)) {
 			try {
 				return Double.parseDouble(value) == Double.parseDouble(fieldValue);
 			} catch (NumberFormatException nfe) {
