@@ -315,5 +315,43 @@ public class ObjectMatcherTest {
 		assertThat(true, equalTo(matcher.allFiltersAreApplyable(testFilter)));
 		
 	}
+	
+//	@Test // IDEA, see if it makes any sense
+	// I should be able to know how many times a rule failed 
+	// in an object with the name I wanted it to be compared to
+//	public void registerFailuresAndSuccessesOnList () {
+//		TestObject testObject = new TestObject("Complex list comparison within nested object", "Blue", 299.00, null);
+//		
+//		NestedClass nestedObject = new NestedClass("nestedTest", 200.00, 30);
+//		ArrayList<NestedClass> primitiveStringList = new ArrayList<NestedClass>();
+//		primitiveStringList.add(new NestedClass("nestedListObjectTest", 199.99, 10));
+//		primitiveStringList.add(new NestedClass("anotherNestedListObjectTest", 49.90, 10));
+//		nestedObject.setFakeNestedObjectList(primitiveStringList);
+//		
+//		testObject.setNestedObject(nestedObject);
+//
+//		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
+//		try {
+//			testFilter.add(this.buildFilter("First complex test with nested object in a list comparing a string", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "nestedListObjectTest"));
+//			testFilter.add(this.buildFilter("First complex test with nested object in a list comparing a double", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "100"));
+//			testFilter.add(this.buildFilter("Second complex test with nested object in a list comparing a string", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "anotherNestedListObjectTest"));
+//			testFilter.add(this.buildFilter("Second complex test with nested object in a list comparing a double", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "49.90"));
+//		} catch (ClassNotFoundException cnfe) {
+//			System.out.println(cnfe);
+//		}
+//		
+//		ObjectMatcher matcher = new ObjectMatcher();
+//		List<BaseFilter> result = new ArrayList<BaseFilter>();
+//		try {
+//			result = matcher.matchObject(testObject, testFilter);
+//		} catch (ClassNotFoundException e) {
+//			System.out.println(e);
+//		}
+//
+//		assertThat(true, equalTo(result.get(0).isApplyable()));
+//		assertThat(true, equalTo(result.get(1).isApplyable()));
+//		assertThat(true, equalTo(result.get(2).isApplyable()));
+//		assertThat(true, equalTo(result.get(3).isApplyable()));
+//	}
 
 }

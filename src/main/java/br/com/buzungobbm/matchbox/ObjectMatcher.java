@@ -12,6 +12,8 @@ import java.util.Map;
 import br.com.buzungobbm.matchbox.exception.NoOperatorSetException;
 
 public class ObjectMatcher {
+	
+//	private List<Object> assertionStatuses = new ArrayList<Object>();
 
 	private Object invokeObjectGetter(Method method, Object instance) {
 		Object genericObject = new Object();
