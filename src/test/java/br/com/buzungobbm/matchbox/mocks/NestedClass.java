@@ -11,6 +11,7 @@ public class NestedClass {
 	private List<String> fakeList;
 	private List<NestedClass> fakeNestedObjectList;
 	private Map<String, Integer> fakeMap;
+	private Map<String, NestedClass> fakeNestedObjectMap;
 
 	public NestedClass (String name, Double price, Integer quantity) { 
 		this.name = name; 
@@ -27,15 +28,19 @@ public class NestedClass {
 	public Double getPrice() { return this.price; }
 	public void setPrice(Double price) { this.price = price; }
 
-	public List<NestedClass> getFakeNestedObjectList() { return this.fakeNestedObjectList; }
-	public void setFakeNestedObjectList(List<NestedClass> fakeList) { this.fakeNestedObjectList = fakeList; }
-	public void addFakeNestedObjectList(NestedClass fakeItem) { this.fakeNestedObjectList.add(fakeItem); }
-
 	public List<String> getFakeList() { return this.fakeList; }
 	public void setFakeList(List<String> fakeList) { this.fakeList = fakeList; }
 	public void addFakeList(String fakeList) { this.fakeList.add(fakeList); }
 
+	public List<NestedClass> getFakeNestedObjectList() { return this.fakeNestedObjectList; }
+	public void setFakeNestedObjectList(List<NestedClass> fakeList) { this.fakeNestedObjectList = fakeList; }
+	public void addFakeNestedObjectList(NestedClass fakeItem) { this.fakeNestedObjectList.add(fakeItem); }
+
 	public Map<String, Integer> getFakeMap() { return this.fakeMap; }
 	public void setFakeMap(Map<String, Integer> fakeMap) { this.fakeMap = fakeMap; }
+
+	public Map<String, NestedClass> getFakeNestedObjectMap() { return this.fakeNestedObjectMap; }
+	public void setFakeNestedObjectMap(Map<String, NestedClass> fakeMap) { this.fakeNestedObjectMap = fakeMap; }
+	public void addFakeNestedObjectMap(String key, NestedClass fakeItem) { this.fakeNestedObjectMap.put(key, fakeItem); }
 
 }

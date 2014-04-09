@@ -6,15 +6,15 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import br.com.buzungobbm.matchbox.exception.NoOperatorSetException;
 
 public class ObjectMatcher {
 	
-//	private List<Object> assertionStatuses = new ArrayList<Object>();
-
 	private Object invokeObjectGetter(Method method, Object instance) {
 		Object genericObject = new Object();
 
@@ -29,6 +29,24 @@ public class ObjectMatcher {
 		}
 
 		return genericObject;
+	}
+
+	private Map<?, ?> invokeMapGetter(Method method, Object instance) {
+		Map<?, ?> genericMap = new HashMap<>();
+
+		try {
+
+			genericMap = (HashMap<?, ?>) method.invoke(instance);
+
+		} catch (IllegalAccessException e) {
+			System.out.println(e);
+		} catch (IllegalArgumentException e) {
+			System.out.println(e);
+		} catch (InvocationTargetException e) {
+			System.out.println(e);
+		}
+
+		return genericMap;
 	}
 
 	private List<?> invokeListGetter (Method method, Object instance) {
@@ -108,10 +126,6 @@ public class ObjectMatcher {
 	
 	private static boolean isMap (Type type) {
 		return type.equals(Map.class);
-	}
-	
-	private static boolean isEnum (Type type) {
-		return type.equals(Enum.class);
 	}
 
 	public boolean conditionSatisfies(String value, Operator operator, String fieldValue) {
@@ -193,6 +207,27 @@ public class ObjectMatcher {
 										}
 									}
 								}
+							} else if (isMap(method.getReturnType())) {
+
+								Map<?, ?> genericMap = invokeMapGetter(method, instance);
+
+								if (genericMap == null) 
+									continue;
+
+								Set<?> keys = genericMap.keySet();
+
+								for (Object key : keys) {
+									Object item = genericMap.get(key);
+									if (isPrimitive(item.getClass())) {
+										if (conditionSatisfies(filter.getValue(), filter.getOperator(), String.valueOf(item))) {
+											return String.valueOf(item);
+										}
+									} else {
+										String s = extractValue(item, filter);
+										if (conditionSatisfies(filter.getValue(), filter.getOperator(), s))
+											return s;
+									}
+								}
 							}
 						}
 					}
@@ -215,6 +250,27 @@ public class ObjectMatcher {
 									if (conditionSatisfies(filter.getValue(), filter.getOperator(), s)) {
 										return s;
 									}
+								}
+							}
+						} else if (isMap(method.getReturnType())) {
+
+							Map<?, ?> genericMap = invokeMapGetter(method, instance);
+
+							if (genericMap == null) 
+								continue;
+
+							Set<?> keys = genericMap.keySet();
+
+							for (Object key : keys) {
+								Object item = genericMap.get(key);
+								if (isPrimitive(item.getClass())) {
+									if (conditionSatisfies(filter.getValue(), filter.getOperator(), String.valueOf(item))) {
+										return String.valueOf(item);
+									}
+								} else {
+									String s = extractValue(item, filter);
+									if (conditionSatisfies(filter.getValue(), filter.getOperator(), s))
+										return s;
 								}
 							}
 						}
@@ -257,9 +313,36 @@ public class ObjectMatcher {
 
 				} else if (isMap(type)) {
 
-				} else if (isEnum(type)) {
+					for (Method method : instance.getClass().getMethods()) {
 
-				} else if (!isPrimitive(type)){
+						if ((method.getName().startsWith("get")) && 
+							(method.getName().toLowerCase().endsWith(field.getName().toLowerCase())) &&
+							(method.getName().length() == (field.getName().length() + 3))) {
+
+							Map<?, ?> genericMap = invokeMapGetter(method, instance);
+
+							if (genericMap == null) 
+								continue;
+
+							Set<?> keys = genericMap.keySet();
+
+							for (Object key : keys) {
+								Object item = genericMap.get(key);
+								if (isPrimitive(item.getClass())) {
+									if (conditionSatisfies(filter.getValue(), filter.getOperator(), String.valueOf(item))) {
+										return String.valueOf(item);
+									}
+								} else {
+									String s = extractValue(item, filter);
+									if (conditionSatisfies(filter.getValue(), filter.getOperator(), s))
+										return s;
+								}
+							}
+
+						}
+					}
+
+				} else if (!isPrimitive(type)) {
 
 					for (Method method : instance.getClass().getMethods()) {
 						if ((method.getName().startsWith("get")) && 
