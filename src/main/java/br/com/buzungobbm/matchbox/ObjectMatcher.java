@@ -168,6 +168,59 @@ public class ObjectMatcher {
 		}
 		return filters;
 	}
+
+	private boolean isThisMethodTheFieldGetter (Method method, Field field) {
+		return (method.getName().startsWith("get")) &&
+			   (method.getName().toLowerCase().endsWith(field.getName().toLowerCase())) &&
+			   (method.getName().length() == (field.getName().length() + 3));
+	}
+
+	private String extractValueFromMap (Method method, Object instance, BaseFilter filter) throws ClassNotFoundException {
+
+		Map<?, ?> genericMap = invokeMapGetter(method, instance);
+
+		if (genericMap == null) 
+			return null;
+
+		Set<?> keys = genericMap.keySet();
+
+		for (Object key : keys) {
+			Object item = genericMap.get(key);
+			if (isPrimitive(item.getClass())) {
+				if (conditionSatisfies(filter.getValue(), filter.getOperator(), String.valueOf(item))) {
+					return String.valueOf(item);
+				}
+			} else {
+				String s = extractValue(item, filter);
+				if (conditionSatisfies(filter.getValue(), filter.getOperator(), s))
+					return s;
+			}
+		}
+
+		return "";
+
+	}
+
+	private String extractValueFromList (Method method, Object instance, BaseFilter filter) throws ClassNotFoundException {
+		List<?> genericList = invokeListGetter(method, instance);
+
+		if (genericList == null) 
+			return null;
+
+		for (Object item : genericList) {
+			if (isPrimitive(item.getClass())) {
+				if (conditionSatisfies(filter.getValue(), filter.getOperator(), String.valueOf(item))) {
+					return String.valueOf(item);
+				}
+			} else {
+				String s = extractValue(item, filter);
+				if (conditionSatisfies(filter.getValue(), filter.getOperator(), s))
+					return s;
+			}
+		}
+		
+		return "";
+	}
 	
 	public String extractValue(Object instance, BaseFilter filter) throws ClassNotFoundException {
 		String fieldValue = "";
@@ -184,50 +237,14 @@ public class ObjectMatcher {
 
 				if (field.getName().equals(filter.getAttributeName())) {
 					for (Method method : instance.getClass().getMethods()) {
-						if ((method.getName().startsWith("get")) &&
-								(method.getName().toLowerCase().endsWith(field.getName().toLowerCase())) &&
-								(method.getName().length() == (field.getName().length() + 3))) {
-
+						if (isThisMethodTheFieldGetter(method, field)) {
 							if (isPrimitive(method.getReturnType())) {
 								String s = invokeGetter(method, instance);
 								if (conditionSatisfies(filter.getValue(), filter.getOperator(), s)) {
 									return s;
 								}
-							} else if (isList(method.getReturnType())) {
-
-								List<?> genericList = invokeListGetter(method, instance);
-								
-								if (genericList == null)
-									continue;
-
-								for (Object item : genericList) {
-									if (isPrimitive(item.getClass())) {
-										if (conditionSatisfies(filter.getValue(), filter.getOperator(), String.valueOf(item))) {
-											return String.valueOf(item);
-										}
-									}
-								}
-							} else if (isMap(method.getReturnType())) {
-
-								Map<?, ?> genericMap = invokeMapGetter(method, instance);
-
-								if (genericMap == null) 
-									continue;
-
-								Set<?> keys = genericMap.keySet();
-
-								for (Object key : keys) {
-									Object item = genericMap.get(key);
-									if (isPrimitive(item.getClass())) {
-										if (conditionSatisfies(filter.getValue(), filter.getOperator(), String.valueOf(item))) {
-											return String.valueOf(item);
-										}
-									} else {
-										String s = extractValue(item, filter);
-										if (conditionSatisfies(filter.getValue(), filter.getOperator(), s))
-											return s;
-									}
-								}
+							} else {
+								System.out.println("WTF?!");
 							}
 						}
 					}
@@ -235,79 +252,42 @@ public class ObjectMatcher {
 					for (Method method : instance.getClass().getMethods()) {
 						if (isList(method.getReturnType())) {
 
-							List<?> genericList = invokeListGetter(method, instance);
-
-							if (genericList == null) 
+							String valueExtractedFromList = extractValueFromList(method, instance, filter);
+							if (valueExtractedFromList == null)
 								continue;
+							else if (!valueExtractedFromList.equals(""))
+								return valueExtractedFromList;
 
-							for (Object item : genericList) {
-								if (isPrimitive(item.getClass())) {
-									if (conditionSatisfies(filter.getValue(), filter.getOperator(), String.valueOf(item))) {
-										return String.valueOf(item);
-									}
-								} else if (!isPrimitive(item.getClass())) {
-									String s = extractValue(item, filter);
-									if (conditionSatisfies(filter.getValue(), filter.getOperator(), s)) {
-										return s;
-									}
-								}
-							}
 						} else if (isMap(method.getReturnType())) {
 
-							Map<?, ?> genericMap = invokeMapGetter(method, instance);
-
-							if (genericMap == null) 
+							String valueExtractedFromMap = extractValueFromMap(method, instance, filter);
+							if (valueExtractedFromMap == null)
 								continue;
+							else if (!valueExtractedFromMap.equals(""))
+								return valueExtractedFromMap;
 
-							Set<?> keys = genericMap.keySet();
-
-							for (Object key : keys) {
-								Object item = genericMap.get(key);
-								if (isPrimitive(item.getClass())) {
-									if (conditionSatisfies(filter.getValue(), filter.getOperator(), String.valueOf(item))) {
-										return String.valueOf(item);
-									}
-								} else {
-									String s = extractValue(item, filter);
-									if (conditionSatisfies(filter.getValue(), filter.getOperator(), s))
-										return s;
-								}
-							}
 						}
 					}
 				}
-		}
+			}
 
-	} else {
+		} else {
 
-		for (Field field : classFields) {
+			for (Field field : classFields) {
 
-			Type type = field.getType();
+				Type type = field.getType();
 
 				if (isList(type)) {
 
 					for (Method method : instance.getClass().getMethods()) {
-						if ((method.getName().startsWith("get")) && 
-								(method.getName().toLowerCase().endsWith(field.getName().toLowerCase())) &&
-								(method.getName().length() == (field.getName().length() + 3))) {
-							List<?> genericList = invokeListGetter(method, instance);
-							
-							if (genericList == null) 
+						if (isThisMethodTheFieldGetter(method, field)) {
+							String valueExtractedFromList = extractValueFromList(method, instance, filter);
+							if (valueExtractedFromList == null)
 								continue;
-
-							for (Object item : genericList) {
-								if (isPrimitive(item.getClass())) {
-									if (conditionSatisfies(filter.getValue(), filter.getOperator(), String.valueOf(item))) {
-										return String.valueOf(item);
-									}
-								} else {
-									String s = extractValue(item, filter);
-									if (conditionSatisfies(filter.getValue(), filter.getOperator(), s))
-										return s;
-								}
-							}
-
-							break;
+							else if (!valueExtractedFromList.equals(""))
+								return valueExtractedFromList;
+							else
+								break;
 						}
 					}
 
@@ -315,29 +295,13 @@ public class ObjectMatcher {
 
 					for (Method method : instance.getClass().getMethods()) {
 
-						if ((method.getName().startsWith("get")) && 
-							(method.getName().toLowerCase().endsWith(field.getName().toLowerCase())) &&
-							(method.getName().length() == (field.getName().length() + 3))) {
+						if (isThisMethodTheFieldGetter(method, field)) {
 
-							Map<?, ?> genericMap = invokeMapGetter(method, instance);
-
-							if (genericMap == null) 
+							String valueExtractedFromMap = extractValueFromMap(method, instance, filter);
+							if (valueExtractedFromMap == null)
 								continue;
-
-							Set<?> keys = genericMap.keySet();
-
-							for (Object key : keys) {
-								Object item = genericMap.get(key);
-								if (isPrimitive(item.getClass())) {
-									if (conditionSatisfies(filter.getValue(), filter.getOperator(), String.valueOf(item))) {
-										return String.valueOf(item);
-									}
-								} else {
-									String s = extractValue(item, filter);
-									if (conditionSatisfies(filter.getValue(), filter.getOperator(), s))
-										return s;
-								}
-							}
+							else if (!valueExtractedFromMap.equals(""))
+								return valueExtractedFromMap;
 
 						}
 					}
@@ -345,9 +309,7 @@ public class ObjectMatcher {
 				} else if (!isPrimitive(type)) {
 
 					for (Method method : instance.getClass().getMethods()) {
-						if ((method.getName().startsWith("get")) && 
-								(method.getName().toLowerCase().endsWith(field.getName().toLowerCase())) &&
-								(method.getName().length() == (field.getName().length() + 3))) {
+						if (isThisMethodTheFieldGetter(method, field)) {
 							Object genericObject = invokeObjectGetter(method, instance);
 							if (genericObject != null) {
 								String s = extractValue(genericObject, filter);
