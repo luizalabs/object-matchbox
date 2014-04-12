@@ -1,7 +1,7 @@
 package br.com.buzungobbm.matchbox.mocks;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class NestedClass {
 
@@ -10,8 +10,8 @@ public class NestedClass {
 	private int quantity;
 	private List<String> fakeList;
 	private List<NestedClass> fakeNestedObjectList;
-	private Map<String, Integer> fakeMap;
-	private Map<String, NestedClass> fakeNestedObjectMap;
+	private HashMap<String, Integer> fakeMap;
+	private HashMap<String, NestedClass> fakeNestedObjectMap;
 
 	public NestedClass (String name, Double price, Integer quantity) { 
 		this.name = name; 
@@ -36,11 +36,11 @@ public class NestedClass {
 	public void setFakeNestedObjectList(List<NestedClass> fakeList) { this.fakeNestedObjectList = fakeList; }
 	public void addFakeNestedObjectList(NestedClass fakeItem) { this.fakeNestedObjectList.add(fakeItem); }
 
-	public Map<String, Integer> getFakeMap() { return this.fakeMap; }
-	public void setFakeMap(Map<String, Integer> fakeMap) { this.fakeMap = fakeMap; }
+	public HashMap<String, Integer> getFakeMap() { return this.fakeMap; }
+	public void setFakeMap(HashMap<String, Integer> fakeMap) { this.fakeMap = fakeMap; }
 
-	public Map<String, NestedClass> getFakeNestedObjectMap() { return this.fakeNestedObjectMap; }
-	public void setFakeNestedObjectMap(Map<String, NestedClass> fakeMap) { this.fakeNestedObjectMap = fakeMap; }
+	public HashMap<String, NestedClass> getFakeNestedObjectMap() { return this.fakeNestedObjectMap; }
+	public void setFakeNestedObjectMap(HashMap<String, NestedClass> fakeMap) { this.fakeNestedObjectMap = fakeMap; }
 	public void addFakeNestedObjectMap(String key, NestedClass fakeItem) { this.fakeNestedObjectMap.put(key, fakeItem); }
 
 }

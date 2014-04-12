@@ -108,24 +108,27 @@ public class ObjectMatcher {
 		return fieldValue;
 	}
 	
-	private static boolean isPrimitive (Type type) {
-		return type.equals(Byte.class) || type.equals(byte.class) || 
-			   type.equals(Short.class) || type.equals(short.class) || 
-			   type.equals(Integer.class) || type.equals(int.class) || 
-			   type.equals(Long.class) || type.equals(long.class) || 
-			   type.equals(Date.class) ||
-			   type.equals(Float.class) || type.equals(float.class) || 
-			   type.equals(Double.class) || type.equals(double.class) || 
-			   type.equals(Boolean.class) || type.equals(boolean.class) ||
-			   type.equals(String.class) || type.equals(char.class);
+	private static boolean isPrimitiveOrSubclass (Type type) {
+		return Number.class.isAssignableFrom((Class<?>) type) ||
+			   Date.class.isAssignableFrom((Class<?>) type) ||
+			   Boolean.class.isAssignableFrom((Class<?>) type) ||
+			   String.class.isAssignableFrom((Class<?>) type) ||
+			   boolean.class.isAssignableFrom((Class<?>) type) ||
+			   byte.class.isAssignableFrom((Class<?>) type) ||
+			   short.class.isAssignableFrom((Class<?>) type) ||
+			   int.class.isAssignableFrom((Class<?>) type) ||
+			   long.class.isAssignableFrom((Class<?>) type) ||
+			   float.class.isAssignableFrom((Class<?>) type) ||
+			   double.class.isAssignableFrom((Class<?>) type) ||
+			   char.class.isAssignableFrom((Class<?>) type);
 	}
 	
 	private static boolean isList (Type type) {
-		return type.equals(List.class);
+		return List.class.isAssignableFrom((Class<?>) type);
 	}
 	
 	private static boolean isMap (Type type) {
-		return type.equals(Map.class);
+		return Map.class.isAssignableFrom((Class<?>) type);
 	}
 
 	public boolean conditionSatisfies(String value, Operator operator, String fieldValue) {
@@ -186,7 +189,7 @@ public class ObjectMatcher {
 
 		for (Object key : keys) {
 			Object item = genericMap.get(key);
-			if (isPrimitive(item.getClass())) {
+			if (isPrimitiveOrSubclass(item.getClass())) {
 				if (conditionSatisfies(filter.getValue(), filter.getOperator(), String.valueOf(item))) {
 					return String.valueOf(item);
 				}
@@ -208,7 +211,7 @@ public class ObjectMatcher {
 			return null;
 
 		for (Object item : genericList) {
-			if (isPrimitive(item.getClass())) {
+			if (isPrimitiveOrSubclass(item.getClass())) {
 				if (conditionSatisfies(filter.getValue(), filter.getOperator(), String.valueOf(item))) {
 					return String.valueOf(item);
 				}
@@ -238,13 +241,12 @@ public class ObjectMatcher {
 				if (field.getName().equals(filter.getAttributeName())) {
 					for (Method method : instance.getClass().getMethods()) {
 						if (isThisMethodTheFieldGetter(method, field)) {
-							if (isPrimitive(method.getReturnType())) {
+							if (isPrimitiveOrSubclass(method.getReturnType())) {
 								String s = invokeGetter(method, instance);
 								if (conditionSatisfies(filter.getValue(), filter.getOperator(), s)) {
 									return s;
 								}
 							} else {
-								System.out.println("WTF?!");
 							}
 						}
 					}
@@ -306,7 +308,7 @@ public class ObjectMatcher {
 						}
 					}
 
-				} else if (!isPrimitive(type)) {
+				} else if (!isPrimitiveOrSubclass(type)) {
 
 					for (Method method : instance.getClass().getMethods()) {
 						if (isThisMethodTheFieldGetter(method, field)) {

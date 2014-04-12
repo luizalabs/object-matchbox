@@ -347,7 +347,7 @@ public class ObjectMatcherTest {
 		TestObject testObject = new TestObject("Primitives map comparison within nested object", "Blue", 299.00, new NestedClass("nestedTest", 200.00, 30));
 
 		NestedClass nestedObject = new NestedClass("nestedTest", 200.00, 30);
-		Map<String, Integer> primitiveMap = new HashMap<String, Integer>();
+		HashMap<String, Integer> primitiveMap = new HashMap<String, Integer>();
 		primitiveMap.put("first", 1);
 		primitiveMap.put("second", 2);
 		nestedObject.setFakeMap(primitiveMap);
@@ -373,7 +373,7 @@ public class ObjectMatcherTest {
 		assertThat(true, equalTo(result.get(1).isApplyable()));
 	
 	}
-	
+
 	@Test
 	public void complexMapComparisonWithinObject () {
 		TestObject testObject = new TestObject("Complex list comparison within nested object", "Blue", 299.00, new NestedClass("nestedTest", 200.00, 30));
@@ -412,7 +412,7 @@ public class ObjectMatcherTest {
 		TestObject testObject = new TestObject("Complex list comparison within nested object", "Blue", 299.00, null);
 		
 		NestedClass nestedObject = new NestedClass("nestedTest", 200.00, 30);
-		Map<String, NestedClass> primitiveStringMap = new HashMap<String, NestedClass>();
+		HashMap<String, NestedClass> primitiveStringMap = new HashMap<String, NestedClass>();
 		primitiveStringMap.put("first", new NestedClass("nestedMapObjectTest", 199.99, 10));
 		primitiveStringMap.put("second", new NestedClass("anotherNestedMapObjectTest", 49.90, 10));
 		nestedObject.setFakeNestedObjectMap(primitiveStringMap);
