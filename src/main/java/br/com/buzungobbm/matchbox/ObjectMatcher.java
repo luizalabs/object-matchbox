@@ -134,7 +134,9 @@ public class ObjectMatcher {
 	}
 
 	public boolean conditionSatisfies(String value, Operator operator, String fieldValue) {
-		if (fieldValue.equals("")) {
+		if (fieldValue == null) {
+			return false;
+		} else if (fieldValue.equals("")) {
 			return false;
 		} else if (operator.equals(Operator.EQUALS_TO)) {
 			try {
@@ -156,6 +158,7 @@ public class ObjectMatcher {
 	}
 
 	public List<BaseFilter> matchObject(Object object, List<BaseFilter> filters) throws ClassNotFoundException {
+
 		for (BaseFilter filter : filters) {
 			if (filter.getOption() == null) {
 				boolean status = conditionSatisfies(filter.getValue(), filter.getOperator(), extractValue(object, filter));
@@ -256,8 +259,11 @@ public class ObjectMatcher {
 								String s = invokeGetter(method, instance);
 								if (conditionSatisfies(filter.getValue(), filter.getOperator(), s)) {
 									return s;
+								} else {
+									break;
 								}
 							} else {
+								System.out.println("Unidentified return type!");
 							}
 						}
 					}

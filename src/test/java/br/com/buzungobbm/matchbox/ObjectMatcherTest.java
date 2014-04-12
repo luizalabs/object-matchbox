@@ -442,6 +442,11 @@ public class ObjectMatcherTest {
 		HashMap<String, NestedClass> primitiveStringMap = new HashMap<String, NestedClass>();
 		primitiveStringMap.put("first", new NestedClass("nestedMapObjectTest", 199.99, 10));
 		primitiveStringMap.put("second", new NestedClass("anotherNestedMapObjectTest", 49.90, 10));
+
+		NestedClass mapNestedObject = new NestedClass("anotherNestedMapObjectTest", 49.90, 10);
+		mapNestedObject.setColor("yellow");
+		primitiveStringMap.put("third", mapNestedObject);
+
 		nestedObject.setFakeNestedObjectMap(primitiveStringMap);
 		
 		testObject.setNestedObject(nestedObject);
@@ -452,6 +457,7 @@ public class ObjectMatcherTest {
 			testFilter.add(this.buildFilter("First complex test with nested object in a map comparing a double", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "199.99"));
 			testFilter.add(this.buildFilter("Second complex test with nested object in a map comparing a string", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "anotherNestedMapObjectTest"));
 			testFilter.add(this.buildFilter("Second complex test with nested object in a map comparing a double", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "49.90"));
+			testFilter.add(this.buildFilter("Second complex test with nested object in a map comparing a string", "br.com.buzungobbm.matchbox.mocks.NestedClass", "color", Operator.EQUALS_TO, "yellow"));
 		} catch (ClassNotFoundException cnfe) {
 			System.out.println(cnfe);
 		}
@@ -468,6 +474,7 @@ public class ObjectMatcherTest {
 		assertThat(true, equalTo(result.get(1).isApplyable()));
 		assertThat(true, equalTo(result.get(2).isApplyable()));
 		assertThat(true, equalTo(result.get(3).isApplyable()));
+		assertThat(true, equalTo(result.get(4).isApplyable()));
 	}
 
 }
