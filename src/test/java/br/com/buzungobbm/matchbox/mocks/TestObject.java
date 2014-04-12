@@ -14,6 +14,9 @@ public class TestObject {
 	private Map<String, Integer> fakeMap;
 	private Map<String, NestedClass> fakeNestedObjectMap;
 	private NestedClass nestedObject;
+	
+	public TestObject () {
+	}
 
 	public TestObject (String name, String color, Double price, NestedClass nestedObject) { 
 		this.name = name; 

@@ -3,7 +3,7 @@ package br.com.buzungobbm.matchbox.mocks;
 import java.util.HashMap;
 import java.util.List;
 
-public class NestedClass {
+public class NestedClass extends TestObject {
 
 	private String name;
 	private double price;
@@ -14,6 +14,7 @@ public class NestedClass {
 	private HashMap<String, NestedClass> fakeNestedObjectMap;
 
 	public NestedClass (String name, Double price, Integer quantity) { 
+		super();
 		this.name = name; 
 		this.price = price; 
 		this.quantity = quantity; 
@@ -25,7 +26,7 @@ public class NestedClass {
 	public Integer getQuantity() { return this.quantity; }
 	public void setQuantity(Integer quantity) { this.quantity = quantity; }
 
-	public Double getPrice() { return this.price; }
+	public double getPrice() { return this.price; }
 	public void setPrice(Double price) { this.price = price; }
 
 	public List<String> getFakeList() { return this.fakeList; }

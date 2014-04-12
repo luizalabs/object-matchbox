@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.ObjectArrays;
+
 import br.com.buzungobbm.matchbox.exception.NoOperatorSetException;
 
 public class ObjectMatcher {
@@ -225,11 +227,20 @@ public class ObjectMatcher {
 		return "";
 	}
 	
+	private Field[] mergeFields (Field[] baseClassFields, Field[] superClassFields) {
+		return ObjectArrays.concat(baseClassFields, superClassFields, Field.class);
+	}
+	
 	public String extractValue(Object instance, BaseFilter filter) throws ClassNotFoundException {
 		String fieldValue = "";
 
 		Class<?> baseClass = Class.forName(instance.getClass().getName());
-		Field[] classFields = baseClass.getDeclaredFields();
+		Field[] baseClassFields = baseClass.getDeclaredFields();
+
+		Class<?> superClass = baseClass.getSuperclass();
+		Field[] superClassFields = superClass.getDeclaredFields();
+		
+		Field[] classFields = mergeFields(baseClassFields, superClassFields);
 
 		if (instance.getClass().equals(filter.getClassName())) {
 

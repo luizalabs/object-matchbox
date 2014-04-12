@@ -175,6 +175,33 @@ public class ObjectMatcherTest {
 	}
 
 	@Test
+	public void primitivesComparisonWithinNestedObjectWithExtendedPropertiesSet () {
+		TestObject testObject = new TestObject("Primitives comparison within nested object", "Blue", 299.00, new NestedClass("nestedTest", 200.00, 30));
+		testObject.getNestedObject().setColor("purple");
+
+		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
+		try {
+			testFilter.add(this.buildFilter("Setting applyable for product with price over 200.00", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.GREATER_THAN,"199.90"));
+			testFilter.add(this.buildFilter("Setting applyable for product named nestedTest", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO,"nestedTest"));
+			testFilter.add(this.buildFilter("Setting color for nested object to purple", "br.com.buzungobbm.matchbox.mocks.NestedClass", "color", Operator.EQUALS_TO, "purple"));
+		} catch (ClassNotFoundException e) {
+			System.out.println(e);
+		}
+		
+		ObjectMatcher matcher = new ObjectMatcher();
+		List<BaseFilter> result = new ArrayList<BaseFilter>();
+		try {
+			result = matcher.matchObject(testObject, testFilter);
+		} catch (ClassNotFoundException e) {
+			System.out.println(e);
+		}
+		
+		assertThat(true, equalTo(result.get(0).isApplyable()));
+		assertThat(true, equalTo(result.get(1).isApplyable()));
+		assertThat(true, equalTo(result.get(2).isApplyable()));
+	}
+
+	@Test
 	public void primitivesListComparisonWithinObject () {
 		TestObject testObject = new TestObject("Primitives ", "Blue", 299.00, null);
 		ArrayList<String> primitiveStringList = new ArrayList<String>();
