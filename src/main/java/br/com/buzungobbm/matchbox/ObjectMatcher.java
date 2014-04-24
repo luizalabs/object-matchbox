@@ -176,11 +176,9 @@ public class ObjectMatcher {
 		}
 		return filters;
 	}
-
-	private boolean isThisMethodTheFieldGetter (Method method, Field field) {
-		return (method.getName().startsWith("get")) &&
-			   (method.getName().toLowerCase().endsWith(field.getName().toLowerCase())) &&
-			   (method.getName().length() == (field.getName().length() + 3));
+	
+	private String getterNameFor (String fieldName) {
+		return "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
 	}
 
 	private String extractValueFromMap (Method method, Object instance, BaseFilter filter) throws ClassNotFoundException {
@@ -235,8 +233,6 @@ public class ObjectMatcher {
 	}
 	
 	public String extractValue(Object instance, BaseFilter filter) throws ClassNotFoundException {
-		String fieldValue = "";
-
 		Class<?> baseClass = Class.forName(instance.getClass().getName());
 		Field[] baseClassFields = baseClass.getDeclaredFields();
 
@@ -245,105 +241,103 @@ public class ObjectMatcher {
 		
 		Field[] classFields = mergeFields(baseClassFields, superClassFields);
 
-		if (instance.getClass().equals(filter.getClassName())) {
+		for (Field field : classFields) {
 
-			for (Field field : classFields) {
+			try {
 
-				if (!fieldValue.equals(""))
-					break;
+				if (instance.getClass().equals(filter.getClassName())) {
 
-				if (field.getName().equals(filter.getAttributeName())) {
-					for (Method method : instance.getClass().getMethods()) {
-						if (isThisMethodTheFieldGetter(method, field)) {
-							if (isPrimitiveOrSubclass(method.getReturnType())) {
-								String s = invokeGetter(method, instance);
-								if (conditionSatisfies(filter.getValue(), filter.getOperator(), s)) {
-									return s;
-								} else {
-									break;
-								}
-							} else {
-								System.out.println("Unidentified return type!");
+					if (field.getName().equals(filter.getAttributeName())) {
+
+						Method method = instance.getClass().getMethod(getterNameFor(field.getName()), (Class<?> []) null);
+						if (isPrimitiveOrSubclass(method.getReturnType())) {
+							String s = invokeGetter(method, instance);
+							if (conditionSatisfies(filter.getValue(), filter.getOperator(), s)) {
+								return s;
+							}
+						} else {
+							System.out.println("Unidentified return type!");
+						}
+
+					} else {
+
+						for (Method method : instance.getClass().getMethods()) {
+							if (isList(method.getReturnType())) {
+
+								String valueExtractedFromList = extractValueFromList(method, instance, filter);
+								if (valueExtractedFromList == null)
+									continue;
+								else if (!valueExtractedFromList.equals(""))
+									return valueExtractedFromList;
+
+							} else if (isMap(method.getReturnType())) {
+
+								String valueExtractedFromMap = extractValueFromMap(method, instance, filter);
+								if (valueExtractedFromMap == null)
+									continue;
+								else if (!valueExtractedFromMap.equals(""))
+									return valueExtractedFromMap;
+
 							}
 						}
 					}
 				} else {
-					for (Method method : instance.getClass().getMethods()) {
-						if (isList(method.getReturnType())) {
 
-							String valueExtractedFromList = extractValueFromList(method, instance, filter);
-							if (valueExtractedFromList == null)
-								continue;
-							else if (!valueExtractedFromList.equals(""))
-								return valueExtractedFromList;
+					Type type = field.getType();
 
-						} else if (isMap(method.getReturnType())) {
+					if (isList(type)) {
 
-							String valueExtractedFromMap = extractValueFromMap(method, instance, filter);
-							if (valueExtractedFromMap == null)
-								continue;
-							else if (!valueExtractedFromMap.equals(""))
-								return valueExtractedFromMap;
-
+						String valueExtractedFromList = extractValueFromList(
+								instance.getClass().getMethod(getterNameFor(field.getName()), (Class<?> []) null),
+								instance,
+								filter
+						);
+						if (valueExtractedFromList == null) {
+							continue;
+						} else if (!valueExtractedFromList.equals("")) {
+							return valueExtractedFromList;
 						}
-					}
-				}
-			}
 
-		} else {
+						break;
 
-			for (Field field : classFields) {
+					} else if (isMap(type)) {
 
-				Type type = field.getType();
-
-				if (isList(type)) {
-
-					for (Method method : instance.getClass().getMethods()) {
-						if (isThisMethodTheFieldGetter(method, field)) {
-							String valueExtractedFromList = extractValueFromList(method, instance, filter);
-							if (valueExtractedFromList == null)
-								continue;
-							else if (!valueExtractedFromList.equals(""))
-								return valueExtractedFromList;
-							else
-								break;
+						String valueExtractedFromMap = extractValueFromMap(
+								instance.getClass().getMethod(getterNameFor(field.getName()), (Class<?> []) null),
+								instance,
+								filter
+						);
+						if (valueExtractedFromMap == null) {
+							continue;
+						} else if (!valueExtractedFromMap.equals("")) {
+							return valueExtractedFromMap;
 						}
-					}
+						break;
 
-				} else if (isMap(type)) {
+					} else if (!isPrimitiveOrSubclass(type)) {
 
-					for (Method method : instance.getClass().getMethods()) {
-
-						if (isThisMethodTheFieldGetter(method, field)) {
-
-							String valueExtractedFromMap = extractValueFromMap(method, instance, filter);
-							if (valueExtractedFromMap == null)
-								continue;
-							else if (!valueExtractedFromMap.equals(""))
-								return valueExtractedFromMap;
-
-						}
-					}
-
-				} else if (!isPrimitiveOrSubclass(type)) {
-
-					for (Method method : instance.getClass().getMethods()) {
-						if (isThisMethodTheFieldGetter(method, field)) {
-							Object genericObject = invokeObjectGetter(method, instance);
-							if (genericObject != null) {
-								String s = extractValue(genericObject, filter);
-								if (conditionSatisfies(filter.getValue(), filter.getOperator(), s)) {
-									return s;
-								}
+						Object genericObject = invokeObjectGetter(
+								instance.getClass().getMethod(getterNameFor(field.getName()), (Class<?> []) null),
+								instance
+						);
+						if (genericObject != null) {
+							String s = extractValue(genericObject, filter);
+							if (conditionSatisfies(filter.getValue(), filter.getOperator(), s)) {
+								return s;
 							}
 						}
-					}
+						break;
 
+					}
 				}
+			} catch (NoSuchMethodException e) {
+				continue;
+			} catch (SecurityException e) {
+				continue;
 			}
 		}
 
-		return fieldValue;
+		return "";
 	}
 
 	public boolean allFiltersAreApplyable(ArrayList<BaseFilter> filters) {
