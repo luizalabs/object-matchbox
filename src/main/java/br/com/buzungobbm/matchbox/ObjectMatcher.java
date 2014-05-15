@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class ObjectMatcher {
 
@@ -20,6 +21,12 @@ public class ObjectMatcher {
 			Callable<BaseFilter> worker = new FilterAnalyzer(object, filter);
 			Future<BaseFilter> task = executor.submit(worker);
 			tasks.add(task);
+		}
+
+		try {
+			executor.awaitTermination(1, TimeUnit.SECONDS);
+		} catch (InterruptedException e) {
+			executor.shutdown();
 		}
 
 		List<BaseFilter> responseFilter = new ArrayList<BaseFilter>();
