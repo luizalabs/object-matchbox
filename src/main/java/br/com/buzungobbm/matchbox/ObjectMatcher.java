@@ -12,7 +12,8 @@ public class ObjectMatcher {
 
 	public List<BaseFilter> matchObject(Object object, List<BaseFilter> filters) throws ClassNotFoundException {
 
-		final ExecutorService executor = Executors.newFixedThreadPool(filters.size());
+		final int threadsNumber = (filters != null && !filters.isEmpty()) ? filters.size() : 1;
+		final ExecutorService executor = Executors.newFixedThreadPool(threadsNumber);
 		final List<Future<BaseFilter>> tasks = new ArrayList<Future<BaseFilter>>();
 
 		for (BaseFilter filter : filters) {
