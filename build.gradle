@@ -28,7 +28,7 @@ install {
     repositories.mavenInstaller {
     	pom.groupId = 'br.com.buzungobbm'
         pom.artifactId = 'matchbox'
-        pom.version = '0.1'
+        pom.version = '0.1.1'
     }
 }
 
