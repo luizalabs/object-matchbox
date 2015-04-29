@@ -26,7 +26,7 @@ public class ObjectMatcher {
 		try {
 			executor.awaitTermination(1, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
-			executor.shutdown();
+			//do nothing
 		}
 
 		List<BaseFilter> responseFilter = new ArrayList<BaseFilter>();
@@ -39,6 +39,9 @@ public class ObjectMatcher {
 				System.out.println(e);
 			}
 		}
+
+		executor.shutdown();
+
 		return responseFilter;
 	}
 
