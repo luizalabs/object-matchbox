@@ -1,4 +1,4 @@
-package br.com.buzungobbm.matchbox;
+package com.luizalabs.matchbox;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -13,8 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.ObjectArrays;
-
-import br.com.buzungobbm.matchbox.exception.NoOperatorSetException;
+import com.luizalabs.matchbox.exception.NoOperatorSetException;
 
 public class FilterAnalyzer implements Callable<BaseFilter> {
 	

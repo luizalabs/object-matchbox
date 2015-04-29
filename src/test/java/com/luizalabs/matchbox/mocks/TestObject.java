@@ -1,4 +1,4 @@
-package br.com.buzungobbm.matchbox.mocks;
+package com.luizalabs.matchbox.mocks;
 
 import java.util.HashMap;
 import java.util.List;

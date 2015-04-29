@@ -1,4 +1,4 @@
-package br.com.buzungobbm.matchbox;
+package com.luizalabs.matchbox;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -10,7 +10,11 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import br.com.buzungobbm.matchbox.mocks.*;
+import com.luizalabs.matchbox.BaseFilter;
+import com.luizalabs.matchbox.MatchingOptions;
+import com.luizalabs.matchbox.ObjectMatcher;
+import com.luizalabs.matchbox.Operator;
+import com.luizalabs.matchbox.mocks.*;
 
 public class ObjectMatcherTest {
 	
@@ -156,8 +160,8 @@ public class ObjectMatcherTest {
 
 		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
 		try {
-			testFilter.add(this.buildFilter("Setting applyable for product with price over 200.00", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.GREATER_THAN,"199.90"));
-			testFilter.add(this.buildFilter("Setting applyable for product named nestedTest", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO,"nestedTest"));
+			testFilter.add(this.buildFilter("Setting applyable for product with price over 200.00", "com.luizalabs.matchbox.mocks.NestedClass", "price", Operator.GREATER_THAN,"199.90"));
+			testFilter.add(this.buildFilter("Setting applyable for product named nestedTest", "com.luizalabs.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO,"nestedTest"));
 		} catch (ClassNotFoundException e) {
 			System.out.println(e);
 		}
@@ -181,9 +185,9 @@ public class ObjectMatcherTest {
 
 		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
 		try {
-			testFilter.add(this.buildFilter("Setting applyable for product with price over 200.00", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.GREATER_THAN,"199.90"));
-			testFilter.add(this.buildFilter("Setting applyable for product named nestedTest", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO,"nestedTest"));
-			testFilter.add(this.buildFilter("Setting color for nested object to purple", "br.com.buzungobbm.matchbox.mocks.NestedClass", "color", Operator.EQUALS_TO, "purple"));
+			testFilter.add(this.buildFilter("Setting applyable for product with price over 200.00", "com.luizalabs.matchbox.mocks.NestedClass", "price", Operator.GREATER_THAN,"199.90"));
+			testFilter.add(this.buildFilter("Setting applyable for product named nestedTest", "com.luizalabs.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO,"nestedTest"));
+			testFilter.add(this.buildFilter("Setting color for nested object to purple", "com.luizalabs.matchbox.mocks.NestedClass", "color", Operator.EQUALS_TO, "purple"));
 		} catch (ClassNotFoundException e) {
 			System.out.println(e);
 		}
@@ -236,8 +240,8 @@ public class ObjectMatcherTest {
 
 		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
 		try {
-			testFilter.add(this.buildFilter("First primitive string test with list", "br.com.buzungobbm.matchbox.mocks.NestedClass", "fakeList", Operator.EQUALS_TO,"first_primitive_string"));
-			testFilter.add(this.buildFilter("Second primitive string testwith list", "br.com.buzungobbm.matchbox.mocks.NestedClass", "fakeList", Operator.EQUALS_TO,"Second Primitive STRING"));
+			testFilter.add(this.buildFilter("First primitive string test with list", "com.luizalabs.matchbox.mocks.NestedClass", "fakeList", Operator.EQUALS_TO,"first_primitive_string"));
+			testFilter.add(this.buildFilter("Second primitive string testwith list", "com.luizalabs.matchbox.mocks.NestedClass", "fakeList", Operator.EQUALS_TO,"Second Primitive STRING"));
 		} catch (ClassNotFoundException cnfe) {
 			System.out.println(cnfe);
 		}
@@ -265,9 +269,9 @@ public class ObjectMatcherTest {
 
 		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
 		try {
-			testFilter.add(this.buildFilter("First complex string test with list", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO,"nestedListObjectTest"));
-			testFilter.add(this.buildFilter("First complex double test with list", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.LOWER_THAN_OR_EQUALS_TO,"250.00"));
-			testFilter.add(this.buildFilter("Second complex string test with list", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO,"anotherNestedListObjectTest"));
+			testFilter.add(this.buildFilter("First complex string test with list", "com.luizalabs.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO,"nestedListObjectTest"));
+			testFilter.add(this.buildFilter("First complex double test with list", "com.luizalabs.matchbox.mocks.NestedClass", "price", Operator.LOWER_THAN_OR_EQUALS_TO,"250.00"));
+			testFilter.add(this.buildFilter("Second complex string test with list", "com.luizalabs.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO,"anotherNestedListObjectTest"));
 		} catch (ClassNotFoundException cnfe) {
 			System.out.println(cnfe);
 		}
@@ -299,10 +303,10 @@ public class ObjectMatcherTest {
 
 		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
 		try {
-			testFilter.add(this.buildFilter("First complex test with nested object in a list comparing a string", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "nestedListObjectTest"));
-			testFilter.add(this.buildFilter("First complex test with nested object in a list comparing a double", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "199.99"));
-			testFilter.add(this.buildFilter("Second complex test with nested object in a list comparing a string", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "anotherNestedListObjectTest"));
-			testFilter.add(this.buildFilter("Second complex test with nested object in a list comparing a double", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "49.90"));
+			testFilter.add(this.buildFilter("First complex test with nested object in a list comparing a string", "com.luizalabs.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "nestedListObjectTest"));
+			testFilter.add(this.buildFilter("First complex test with nested object in a list comparing a double", "com.luizalabs.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "199.99"));
+			testFilter.add(this.buildFilter("Second complex test with nested object in a list comparing a string", "com.luizalabs.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "anotherNestedListObjectTest"));
+			testFilter.add(this.buildFilter("Second complex test with nested object in a list comparing a double", "com.luizalabs.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "49.90"));
 		} catch (ClassNotFoundException cnfe) {
 			System.out.println(cnfe);
 		}
@@ -326,10 +330,10 @@ public class ObjectMatcherTest {
 
 		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
 		try {
-			testFilter.add(this.buildFilter("First complex test with nested object in a list comparing a string", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "nestedListObjectTest"));
-			testFilter.add(this.buildFilter("First complex test with nested object in a list comparing a double", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "199.99"));
-			testFilter.add(this.buildFilter("Second complex test with nested object in a list comparing a string", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "anotherNestedListObjectTest"));
-			testFilter.add(this.buildFilter("Second complex test with nested object in a list comparing a double", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "49.90"));
+			testFilter.add(this.buildFilter("First complex test with nested object in a list comparing a string", "com.luizalabs.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "nestedListObjectTest"));
+			testFilter.add(this.buildFilter("First complex test with nested object in a list comparing a double", "com.luizalabs.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "199.99"));
+			testFilter.add(this.buildFilter("Second complex test with nested object in a list comparing a string", "com.luizalabs.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "anotherNestedListObjectTest"));
+			testFilter.add(this.buildFilter("Second complex test with nested object in a list comparing a double", "com.luizalabs.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "49.90"));
 			
 			testFilter.get(0).setApplyable(true);
 			testFilter.get(1).setApplyable(true);
@@ -382,8 +386,8 @@ public class ObjectMatcherTest {
 
 		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
 		try {
-			testFilter.add(this.buildFilter("First primitive string test with map", "br.com.buzungobbm.matchbox.mocks.NestedClass", "fakeMap", Operator.EQUALS_TO,"1"));
-			testFilter.add(this.buildFilter("Second primitive string testwith map", "br.com.buzungobbm.matchbox.mocks.NestedClass", "fakeMap", Operator.EQUALS_TO,"2"));
+			testFilter.add(this.buildFilter("First primitive string test with map", "com.luizalabs.matchbox.mocks.NestedClass", "fakeMap", Operator.EQUALS_TO,"1"));
+			testFilter.add(this.buildFilter("Second primitive string testwith map", "com.luizalabs.matchbox.mocks.NestedClass", "fakeMap", Operator.EQUALS_TO,"2"));
 		} catch (ClassNotFoundException cnfe) {
 			System.out.println(cnfe);
 		}
@@ -412,10 +416,10 @@ public class ObjectMatcherTest {
 
 		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
 		try {
-			testFilter.add(this.buildFilter("Main Object Match", "br.com.buzungobbm.matchbox.mocks.TestObject", "color", Operator.EQUALS_TO, "Blue"));
-			testFilter.add(this.buildFilter("First complex string test with map", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO,"nestedMapObjectTest"));
-			testFilter.add(this.buildFilter("First complex double test with map", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.LOWER_THAN_OR_EQUALS_TO,"250.00"));
-			testFilter.add(this.buildFilter("Second complex string test with map", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO,"anotherNestedMapObjectTest"));
+			testFilter.add(this.buildFilter("Main Object Match", "com.luizalabs.matchbox.mocks.TestObject", "color", Operator.EQUALS_TO, "Blue"));
+			testFilter.add(this.buildFilter("First complex string test with map", "com.luizalabs.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO,"nestedMapObjectTest"));
+			testFilter.add(this.buildFilter("First complex double test with map", "com.luizalabs.matchbox.mocks.NestedClass", "price", Operator.LOWER_THAN_OR_EQUALS_TO,"250.00"));
+			testFilter.add(this.buildFilter("Second complex string test with map", "com.luizalabs.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO,"anotherNestedMapObjectTest"));
 		} catch (ClassNotFoundException cnfe) {
 			System.out.println(cnfe);
 		}
@@ -453,11 +457,11 @@ public class ObjectMatcherTest {
 
 		ArrayList<BaseFilter> testFilter = new ArrayList<BaseFilter>();
 		try {
-			testFilter.add(this.buildFilter("First complex test with nested object in a map comparing a string", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "nestedMapObjectTest"));
-			testFilter.add(this.buildFilter("First complex test with nested object in a map comparing a double", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "199.99"));
-			testFilter.add(this.buildFilter("Second complex test with nested object in a map comparing a string", "br.com.buzungobbm.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "anotherNestedMapObjectTest"));
-			testFilter.add(this.buildFilter("Second complex test with nested object in a map comparing a double", "br.com.buzungobbm.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "49.90"));
-			testFilter.add(this.buildFilter("Second complex test with nested object in a map comparing a string", "br.com.buzungobbm.matchbox.mocks.NestedClass", "color", Operator.EQUALS_TO, "yellow"));
+			testFilter.add(this.buildFilter("First complex test with nested object in a map comparing a string", "com.luizalabs.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "nestedMapObjectTest"));
+			testFilter.add(this.buildFilter("First complex test with nested object in a map comparing a double", "com.luizalabs.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "199.99"));
+			testFilter.add(this.buildFilter("Second complex test with nested object in a map comparing a string", "com.luizalabs.matchbox.mocks.NestedClass", "name", Operator.EQUALS_TO, "anotherNestedMapObjectTest"));
+			testFilter.add(this.buildFilter("Second complex test with nested object in a map comparing a double", "com.luizalabs.matchbox.mocks.NestedClass", "price", Operator.EQUALS_TO, "49.90"));
+			testFilter.add(this.buildFilter("Second complex test with nested object in a map comparing a string", "com.luizalabs.matchbox.mocks.NestedClass", "color", Operator.EQUALS_TO, "yellow"));
 		} catch (ClassNotFoundException cnfe) {
 			System.out.println(cnfe);
 		}

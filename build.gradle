@@ -3,7 +3,7 @@ apply plugin: "maven"
 apply plugin: "eclipse"
 apply plugin: "idea"
 
-archivesBaseName = "object-matchbox-0.1"
+archivesBaseName = "object-matchbox-1.0"
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
 
@@ -26,9 +26,9 @@ dependencies {
 
 install {
     repositories.mavenInstaller {
-    	pom.groupId = 'br.com.buzungobbm'
+    	pom.groupId = 'com.luizalabs'
         pom.artifactId = 'matchbox'
-        pom.version = '0.1.1'
+        pom.version = '1.0'
     }
 }
 

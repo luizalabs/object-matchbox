@@ -1,4 +1,4 @@
-package br.com.buzungobbm.matchbox.exception;
+package com.luizalabs.matchbox.exception;
 
 @SuppressWarnings("serial")
 public class NoOperatorSetException extends InternalError {

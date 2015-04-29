@@ -1,4 +1,4 @@
-package br.com.buzungobbm.matchbox;
+package com.luizalabs.matchbox;
 
 import java.util.List;
 import java.util.Map;
