@@ -11,7 +11,7 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven {
-        url "http://eaio.com/maven2"
+        url "https://repo.maven.apache.org/maven2"
     }
 }
 
